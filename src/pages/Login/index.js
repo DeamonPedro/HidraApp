@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef, createRef} from 'react';
 
 import CircleEffectBack from '../../assets/images/circleEffectBack.svg';
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import {
   View,
+  Text,
   Animated,
   StatusBar,
   SafeAreaView,
@@ -17,8 +18,11 @@ import LoginForm from '../../components/LoginForm';
 import QRScanner from '../../components/QRScanner';
 import {getUserData} from '../../services/store';
 import Button from '../../components/Button';
+import Cadastro from '../../components/Cadastro';
 import Alerts from '../../utils/alerts';
 import styles from './styles';
+
+import Modal from '../../components/Modal';
 
 export default function Login({navigation}) {
   const dispatch = useDispatch();
@@ -26,6 +30,7 @@ export default function Login({navigation}) {
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState(0);
   const translateY = new Animated.Value(value);
+  const modal = createRef();
   const animatedEvent = Animated.event(
     [
       {
@@ -37,6 +42,8 @@ export default function Login({navigation}) {
     {useNativeDriver: true},
   );
   let offset = 0;
+
+  console.log(modal.current);
 
   function onHandlerStateChange(event) {
     if (event.nativeEvent.oldState === State.ACTIVE) {
@@ -129,6 +136,9 @@ export default function Login({navigation}) {
         barStyle="light-content"
         backgroundColor={styles.statusBar.backgroundColor}
       />
+      <Modal ref={modal}>
+        <Cadastro></Cadastro>
+      </Modal>
       {scanQrVisible ? (
         <QRScanner
           onError={(msg) =>
@@ -183,7 +193,7 @@ export default function Login({navigation}) {
                     style={styles.buttonScan}
                     styleIcon={'#2343A9'}
                     styleText={styles.textButtonScan}
-                    onPress={() => setScanQrVisible(true)}
+                    onPress={(event) => modal.current.Show(event)}
                   />
                 </LoginFormBar>
               </Animated.View>

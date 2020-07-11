@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Text, View, TouchableOpacity, Modal, StatusBar} from 'react-native';
+import React, {useState, createRef, useEffect} from 'react';
+import {Text, View, TouchableOpacity, StatusBar} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {getUserData} from '../../services/store';
@@ -8,9 +8,12 @@ import styles from './styles';
 import Card from '../Card';
 import Button from '../Button';
 import {RNCamera} from 'react-native-camera';
-export default function QRScanner({onError, onClose}) {
+import Modal from '../Modal';
+
+export default function QRScanner({onError, onClose, ref}) {
   const [scannedData, setScaneedData] = useState({});
   const [flash, setFlash] = useState(RNCamera.Constants.FlashMode.off);
+
   const onScan = async (data) => {
     try {
       if (data.match(/^[0-9a-zA-Z]+$/) && data.length === 28) {
@@ -26,7 +29,7 @@ export default function QRScanner({onError, onClose}) {
   };
 
   return (
-    <Modal animationType="fade" visible={true}>
+    <View>
       {Object.keys(scannedData).length ? (
         <View style={styles.modalContainer}>
           <Text style={styles.textTitle}>Híbrido detectado</Text>
@@ -78,6 +81,6 @@ export default function QRScanner({onError, onClose}) {
           </TouchableOpacity>
         </View>
       )}
-    </Modal>
+    </View>
   );
 }
